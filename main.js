@@ -108,25 +108,27 @@ function createAlbum(albumId, title) {
 function createPhoto(photoData) {
     const photo = createElement('img', 'photo_small');
     photo.src = photoData.thumbnailUrl;
+    const photoContainer = createElement('div', 'photo-container');
+    photoContainer.append(photo);
 
     const largePhoto = createElement('img', 'photo_large hide');
     largePhoto.src = photoData.url;
     const largePhotoContainer = createElement('div', 'photo-container_large');
     largePhotoContainer.append(largePhoto);
 
-    showPhotoHandler(photo, largePhoto);
+    showPhotoHandler(photoContainer, largePhoto);
     const photoTitleContainer = createElement('div', 'title-container');
     const photoTitle = createElement('h4', 'title');
     photoTitle.textContent = 'Название фото: ' + photoData.title;
     photoTitleContainer.append(photoTitle);
 
-    showTitleHandler(photo, largePhotoContainer, photoTitleContainer);
+    showTitleHandler(photoContainer, largePhotoContainer, photoTitleContainer);
 
-    const photoContainer = createElement('div', 'photo-container');
-    photoContainer.append(photo, largePhotoContainer)
+    const photosContainer = createElement('div', 'photo-container');
+    photosContainer.append(photoContainer, largePhotoContainer)
 
     const albumItem = createElement('li', 'album-item');
-    albumItem.append(photoContainer);
+    albumItem.append(photosContainer);
     albumItem.append(createPhotoFavButton(photoData));
     return albumItem;
 }
@@ -166,15 +168,14 @@ function showTitleHandler(photo, largePhoto, title) {
     function removeTitle(elem) {
         title.remove();
     }
-
-    largePhoto.onmouseenter = (event) => {
-        largePhoto.append(title);
+    function addTitle(elem) {
+        elem.append(title);
     }
-    photo.onmouseenter = (event) => {
-        photo.after(title);
-    }
+    
     photo.addEventListener('mouseleave', () => removeTitle(photo));
+    photo.addEventListener('mouseenter', () => addTitle(photo));
     largePhoto.addEventListener('mouseleave', () => removeTitle(largePhoto));
+    largePhoto.addEventListener('mouseenter', () => addTitle(largePhoto));
     largePhoto.addEventListener('click', () => removeTitle(largePhoto))
 }
 
